@@ -327,10 +327,13 @@ class TestClientDirSupport(unittest.TestCase):
         self.dir = d.name
         d.close()
         self.dir_name = 'client_dir'
+        self.priv_dir_name = 'priv_dir'
         self.cds = clientDirSupport(self.user, self.dir, self.dir_name, False)
+        self.cdp = clientDirSupport(self.user, self.dir, self.priv_dir_name, True)
 
     def test___init__(self):
         self.assertTrue(isinstance(self.cds, clientDirSupport))
+        self.assertTrue(isinstance(self.cdp, clientDirSupport))
 
     def test_create_dir(self):
         self.cds.create_dir(fail_if_exists=True)
@@ -341,12 +344,26 @@ class TestClientDirSupport(unittest.TestCase):
         except:
             assert True
 
+    def test_create_priv_dir(self):
+        self.cdp.create_dir(fail_if_exists=True)
+        self.assertTrue(os.path.exists(self.dir))
+        try:
+            self.cdp.create_dir(fail_if_exists=True)
+            assert False
+        except:
+            assert True
+
     def test_delete_dir(self):
         self.cds.create_dir()
         self.assertTrue(os.path.exists(self.dir))
         self.cds.delete_dir()
         self.assertFalse(os.path.exists(self.dir))
 
+    def test_delete_priv_dir(self):
+        self.cdp.create_dir()
+        self.assertTrue(os.path.exists(self.dir))
+        self.cdp.delete_dir()
+        self.assertFalse(os.path.exists(self.dir))
 
 class TestChmodClientDirSupport(unittest.TestCase):
     @unittest.skip('for now')

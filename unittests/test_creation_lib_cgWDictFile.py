@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 from __future__ import absolute_import
 from __future__ import print_function
+import getpass
 import unittest2 as unittest
+import os
+import tempfile
 import xmlrunner
 
 
@@ -25,17 +28,23 @@ from glideinwms.creation.lib.cgWDictFile import save_entry_dicts
 # from glideinwms.creation.lib.cgWDictFile import reuse_common_dicts
 # from glideinwms.creation.lib.cgWDictFile import reuse_main_dicts
 # from glideinwms.creation.lib.cgWDictFile import reuse_entry_dicts
-# from glideinwms.creation.lib.cgWDictFile import clientDirSupport
+from glideinwms.creation.lib.cgWDictFile import clientDirSupport
 # from glideinwms.creation.lib.cgWDictFile import chmodClientDirSupport
 # from glideinwms.creation.lib.cgWDictFile import baseClientDirSupport
 # from glideinwms.creation.lib.cgWDictFile import clientSymlinksSupport
 # from glideinwms.creation.lib.cgWDictFile import clientLogDirSupport
 # from glideinwms.creation.lib.cgWDictFile import clientProxiesDirSupport
 from glideinwms.creation.lib.cgWDictFile import glideinMainDicts
-# from glideinwms.creation.lib.cgWDictFile import glideinEntryDicts
-# from glideinwms.creation.lib.cgWDictFile import glideinDicts
+from glideinwms.creation.lib.cgWDictFile import glideinEntryDicts
+from glideinwms.creation.lib.cgWDictFile import glideinDicts
 
 # import glideinwms.creation.lib.cWDictFile as cWDictFile
+
+from glideinwms.creation.lib.factoryXmlConfig import parse
+
+XML = 'fixtures/factory/glideinWMS.xml'
+XML_ENTRY = 'fixtures/factory/config.d/Dev_Sites.xml'
+XML_ENTRY2 = 'fixtures/factory/config.d/Dev_Sites2.xml'
 
 
 # class TestMonitorGroupDictFile(unittest.TestCase):
@@ -48,8 +57,8 @@ class TestcgWDictFile(unittest.TestCase):
         self.common_dicts = get_common_dicts(self.submit_dir, self.stage_dir)
         self.entry_dicts = get_entry_dicts(
             self.submit_dir, self.stage_dir, 'entry_el6_osg34')
-        #self.main_dicts.refresh()
-        #self.entry_dicts.refresh()
+        #self.main_dicts.populate()
+        #self.entry_dicts.populate()
 
     def test__init__(self):
         self.assertTrue(isinstance(self.main_dicts, dict))
@@ -312,22 +321,31 @@ class TestCondorJDLDictFile(unittest.TestCase):
 
 
 class TestClientDirSupport(unittest.TestCase):
-    @unittest.skip('for now')
+    def setUp(self):
+        self.user = getpass.getuser()
+        d = tempfile.NamedTemporaryFile()
+        self.dir = d.name
+        d.close()
+        self.dir_name = 'client_dir'
+        self.cds = clientDirSupport(self.user, self.dir, self.dir_name, False)
+
     def test___init__(self):
-        # client_dir_support = clientDirSupport(user, dir, dir_name, privsep_mkdir)
-        assert False  # TODO: implement your test here
+        self.assertTrue(isinstance(self.cds, clientDirSupport))
 
-    @unittest.skip('for now')
     def test_create_dir(self):
-        # client_dir_support = clientDirSupport(user, dir, dir_name, privsep_mkdir)
-        # self.assertEqual(expected, client_dir_support.create_dir(fail_if_exists))
-        assert False  # TODO: implement your test here
+        self.cds.create_dir(fail_if_exists=True)
+        self.assertTrue(os.path.exists(self.dir))
+        try:
+            self.cds.create_dir(fail_if_exists=True)
+            assert False
+        except:
+            assert True
 
-    @unittest.skip('for now')
     def test_delete_dir(self):
-        # client_dir_support = clientDirSupport(user, dir, dir_name, privsep_mkdir)
-        # self.assertEqual(expected, client_dir_support.delete_dir())
-        assert False  # TODO: implement your test here
+        self.cds.create_dir()
+        self.assertTrue(os.path.exists(self.dir))
+        self.cds.delete_dir()
+        self.assertFalse(os.path.exists(self.dir))
 
 
 class TestChmodClientDirSupport(unittest.TestCase):
@@ -374,6 +392,7 @@ class TestClientProxiesDirSupport(unittest.TestCase):
 class TestGlideinMainDicts(unittest.TestCase):
 
     def setUp(self):
+        self.conf = parse(XML)
         self.gmdicts = glideinMainDicts('fixtures/factory/work-dir',
                                         'fixtures/factory/stage',
                                         'work-dir',
@@ -413,32 +432,9 @@ class TestGlideinMainDicts(unittest.TestCase):
         self.gmdicts.save(set_readonly=True)
         self.gmdicts.save(set_readonly=False)
 
-    @unittest.skip('raised notimplemented')
-    def test_populate(self):
-        other = {}
-        self.gmdicts.populate(other)
-        if other:
-            assert True
-        else:
-            assert False
 
-    @unittest.skip('for now')
-    def test_save_monitor(self):
-        # glidein_main_dicts = glideinMainDicts(conf, workdir_name)
-        # self.assertEqual(expected, glidein_main_dicts.save_monitor())
-        assert False  # TODO: implement your test here
 
-    @unittest.skip('for now')
-    def test_save_monitor_config(self):
-        # glidein_main_dicts = glideinMainDicts(conf, workdir_name)
-        # self.assertEqual(expected, glidein_main_dicts.save_monitor_config(work_dir, glidein_dict))
-        assert False  # TODO: implement your test here
 
-    @unittest.skip('for now')
-    def test_save_pub_key(self):
-        # glidein_main_dicts = glideinMainDicts(conf, workdir_name)
-        # self.assertEqual(expected, glidein_main_dicts.save_pub_key())
-        assert False  # TODO: implement your test here
 
 
     @unittest.skip('for now')

@@ -37,7 +37,7 @@ XML_ENTRY2 = 'fixtures/factory/config.d/Dev_Sites2.xml'
 class TestGlideinMainDicts(unittest.TestCase):
     def setUp(self):
         self.conf = parse(XML)
-        self.gmd = glideinMainDicts(self.conf, '/var/lib/gwms-factory/work-dir')
+        self.gmd = glideinMainDicts(self.conf, 'fixtures/factory/work-dir')
     
     def test__init__(self):
         self.assertTrue(isinstance(self.gmd, glideinMainDicts))
@@ -54,9 +54,9 @@ class TestGlideinEntryDicts(unittest.TestCase):
     def test__init__(self):
         self.assertTrue(isinstance(self.ged, glideinEntryDicts))
 
-    @unittest.skip('not right')
+    @unittest.skip('cant seem to find entry config stanza')
     def test_populate(self):
-        self.ged.populate(parse(XML), "fermicloud173.fnal.gov")
+        self.ged.populate(parse(XML), "fermicloud380.fnal.gov")
 
 class TestGlideinDicts(unittest.TestCase):
     def setUp(self):
@@ -66,7 +66,7 @@ class TestGlideinDicts(unittest.TestCase):
     def test__init__(self):
         self.assertTrue(isinstance(self.ged, glideinDicts))
 
-    @unittest.skip('hmmm')
+    @unittest.skip('have to mock out condor tarball stuff')
     def test_populate(self):
         self.ged.populate()
 
@@ -95,28 +95,38 @@ class TestIterToDict(unittest.TestCase):
         # assert False TODO: implement your test here
 
 class TestPopulateFactoryDescript(unittest.TestCase):
-    @unittest.skip('for now')
     def test_populate_factory_descript(self):
-        self.assertEqual(expected, populate_factory_descript(work_dir, glidein_dict, active_sub_list, disabled_sub_list, conf))
-        # assert False TODO: implement your test here
+        work_dir = 'fixtures/factory/work-dir'
+        conf = parse(XML)
+        ged = glideinMainDicts(conf, work_dir)
+        populate_factory_descript(ged.work_dir, ged.dicts['glidein'], ged.active_sub_list, ged.disabled_sub_list, ged.conf)
 
 class TestPopulateJobDescript(unittest.TestCase):
-    @unittest.skip('for now')
+    @unittest.skip('hmmm')
     def test_populate_job_descript(self):
-        self.assertEqual(expected, populate_job_descript(work_dir, job_descript_dict, sub_name, entry, schedd))
+        work_dir = 'fixtures/factory/work-dir'
+        conf = parse(XML)
+        ged = glideinEntryDicts(conf,'','', work_dir)
+        #entry = parse(XML_ENTRY)
+        entry = conf
+        schedd = "fermicloud173.fnal.gov"
+        ged.dicts['job_descript'] = {}
+        populate_job_descript(ged.work_dir, ged.dicts['job_descript'], ged.sub_name, entry, schedd)
+        #self.assertEqual(expected, populate_job_descript(work_dir, job_descript_dict, sub_name, entry, schedd))
         # assert False TODO: implement your test here
 
 class TestPopulateFrontendDescript(unittest.TestCase):
-    @unittest.skip('for now')
     def test_populate_frontend_descript(self):
-        self.assertEqual(expected, populate_frontend_descript(frontend_dict, conf))
-        # assert False TODO: implement your test here
+        conf = parse(XML)
+        ged = glideinMainDicts(conf, 'fixtures/factory/work-dir') 
+        frontend_dict = ged.dicts['frontend_descript']
+        populate_frontend_descript(frontend_dict, conf)
 
 class TestPopulateGridmap(unittest.TestCase):
-    @unittest.skip('for now')
     def test_populate_gridmap(self):
-        self.assertEqual(expected, populate_gridmap(conf, gridmap_dict))
-        # assert False TODO: implement your test here
+        gridmap_dict = {}
+        conf = parse(XML)
+        populate_gridmap(conf, gridmap_dict)
 
 class TestValidateCondorTarballAttrs(unittest.TestCase):
     @unittest.skip('for now')

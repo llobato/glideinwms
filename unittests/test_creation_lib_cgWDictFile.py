@@ -17,9 +17,9 @@ from glideinwms.creation.lib.cgWDictFile import load_entry_dicts
 # from glideinwms.creation.lib.cgWDictFile import refresh_description
 # from glideinwms.creation.lib.cgWDictFile import refresh_file_list
 # from glideinwms.creation.lib.cgWDictFile import refresh_signature
-# from glideinwms.creation.lib.cgWDictFile import save_common_dicts
-# from glideinwms.creation.lib.cgWDictFile import save_main_dicts
-# from glideinwms.creation.lib.cgWDictFile import save_entry_dicts
+from glideinwms.creation.lib.cgWDictFile import save_common_dicts
+from glideinwms.creation.lib.cgWDictFile import save_main_dicts
+from glideinwms.creation.lib.cgWDictFile import save_entry_dicts
 # from glideinwms.creation.lib.cgWDictFile import reuse_simple_dict
 # from glideinwms.creation.lib.cgWDictFile import reuse_file_dict
 # from glideinwms.creation.lib.cgWDictFile import reuse_common_dicts
@@ -48,8 +48,8 @@ class TestcgWDictFile(unittest.TestCase):
         self.common_dicts = get_common_dicts(self.submit_dir, self.stage_dir)
         self.entry_dicts = get_entry_dicts(
             self.submit_dir, self.stage_dir, 'entry_el6_osg34')
-        # self.main_dicts.load()
-        # self.entry_dicts.load()
+        #self.main_dicts.refresh()
+        #self.entry_dicts.refresh()
 
     def test__init__(self):
         self.assertTrue(isinstance(self.main_dicts, dict))
@@ -178,8 +178,15 @@ class TestcgWDictFile(unittest.TestCase):
         info_sys_dict_file.parse_val('')
         info_sys_dict_file.parse_val('###')
 
+    @unittest.skip('hmm')
     def test_load_main_dicts(self):
         load_main_dicts(self.main_dicts)
+
+    def test_save_main_dicts(self):
+        save_main_dicts(self.main_dicts, False)
+
+    def test_common_dicts(self):
+        save_common_dicts(self.common_dicts, True, False)
 
     @unittest.skip('hmm')
     def test_load_common_dicts(self):
@@ -262,10 +269,10 @@ class TestCondorJDLDictFile(unittest.TestCase):
         assert False  # TODO: implement your test here
 
 # class TestSaveMainDicts(unittest.TestCase):
-    @unittest.skip('for now')
-    def test_save_main_dicts(self):
-        # self.assertEqual(expected, save_main_dicts(main_dicts, set_readonly))
-        assert False  # TODO: implement your test here
+#    @unittest.skip('for now')
+#    def test_save_main_dicts(self):
+#        # self.assertEqual(expected, save_main_dicts(main_dicts, set_readonly))
+#        assert False  # TODO: implement your test here
 
 # class TestSaveEntryDicts(unittest.TestCase):
     @unittest.skip('for now')

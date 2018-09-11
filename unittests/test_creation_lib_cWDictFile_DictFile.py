@@ -23,6 +23,7 @@ import xmlrunner
 from glideinwms.unittests.unittest_utils import create_temp_file
 
 from glideinwms.creation.lib.cWDictFile import DictFile
+from glideinwms.creation.lib.cWDictFile import SimpleFileDictFile
 
 
 class TestDictFile(unittest.TestCase):
@@ -238,6 +239,56 @@ class TestDictFile(unittest.TestCase):
         self.dict_file.set_readonly(False)
         self.dict_file.add("foo", "bar", allow_overwrite=True)
 
+class TestSimpleFileDictFile(unittest.TestCase):
 
+    def test___getitem__(self):
+        self.assertNotEqual(None,
+                            self.dict_file.__getitem__('files.cfg'))
+
+    def setUp(self):
+        self.dict_file = SimpleFileDictFile(dir="fixtures/frontend",
+                                  fname="files.cfg",
+                                  sort_keys=True,
+                                  order_matters=None,
+                                  fname_idx=None)
+        self.dict_file.load()
+
+    def test___init__(self):
+        self.assertTrue(isinstance(self.dict_file, SimpleFileDictFile))
+
+    def test_bad_init(self):
+        try:
+            df = SimpleFileDictFile(dir="fixtures/frontend",
+                          fname="files.cfg",
+                          sort_keys=True,
+                          order_matters=True,
+                          fname_idx=None)
+            self.assertTrue(False, "DictFile init succeeded with " +
+                            "sort_keys=True and order_matters=True")
+        except RuntimeError:
+            self.assertTrue(True,
+                            "Raised exception when " +
+                            "sort_keys=True and order_matters=True")
+
+    def test_add(self):
+        self.dict_file.add("group_group1/params.cfg", "bar", allow_overwrite=True)
+        self.dict_file.add("group_group1/params.cfg", "bar", allow_overwrite=True)
+        self.assertNotEqual(None, self.dict_file["group_group1/params.cfg"])
+        try:
+            self.dict_file.add("group_group1/params.cfg", "baz", allow_overwrite=False)
+            assert False
+        except RuntimeError:
+            self.assertTrue(True,
+                            "Raised exception when " +
+                            "overwriting when allow_overwrite=False")
+            return
+        assert False
+
+    def test_get_immutable_files(self):
+        self.assertNotEqual(None, self.dict_file.get_immutable_files())
+
+
+    def test_get_file_fname(self):
+        self.assertEqual('files.cfg', self.dict_file.get_file_fname('files.cfg'))
 if __name__ == '__main__':
     unittest.main(testRunner=xmlrunner.XMLTestRunner('unittests-reports'))

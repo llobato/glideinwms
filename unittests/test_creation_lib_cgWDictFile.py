@@ -1,11 +1,21 @@
 #!/usr/bin/env python
+"""
+Project:
+    glideinWMS
+
+    Description:
+       unit test for glideinwms/creation/lib/cgWDictFile.py
+
+    Author:
+       Dennis Box dbox@fnal.gov
+"""
 from __future__ import absolute_import
 from __future__ import print_function
 import getpass
-import unittest2 as unittest
 import os
 import tempfile
 import xmlrunner
+import unittest2 as unittest
 
 
 # from glideinwms.creation.lib.cgWDictFile import MonitorGroupDictFile
@@ -157,7 +167,7 @@ class TestcgWDictFile(unittest.TestCase):
     def test_add_extended_InfoSysDictFile(self):
         # info_sys_dict_file = self.entry_dicts['infosys']
         # self.assertEqual(expected, info_sys_dict_file.add_extended(infosys_type, server_name, ref_str, allow_overwrite))
-        assert False  # TODO: implement your test here
+        assert False  # implement your test here
 
     def test_file_header_InfoSysDictFile(self):
         info_sys_dict_file = self.entry_dicts['infosys']
@@ -243,13 +253,13 @@ class TestCondorJDLDictFile(unittest.TestCase):
     def test_is_equal_CondorJDLDictFile(self):
         # condor_jdl_dict_file = CondorJDLDictFile(dir, fname, sort_keys, order_matters, jobs_in_cluster, fname_idx)
         # self.assertEqual(expected, condor_jdl_dict_file.is_equal(other, compare_dir, compare_fname, compare_keys))
-        assert False  # TODO: implement your test here
+        assert False  # implement your test here
 
     @unittest.skip('for now')
     def test_parse_val_CondorJDLDictFile(self):
         # condor_jdl_dict_file = CondorJDLDictFile(dir, fname, sort_keys, order_matters, jobs_in_cluster, fname_idx)
         # self.assertEqual(expected, condor_jdl_dict_file.parse_val(line))
-        assert False  # TODO: implement your test here
+        assert False  # implement your test here
 
 
 # class TestRefreshDescription(unittest.TestCase):
@@ -257,67 +267,67 @@ class TestCondorJDLDictFile(unittest.TestCase):
     @unittest.skip('for now')
     def test_refresh_description(self):
         # self.assertEqual(expected, refresh_description(dicts))
-        assert False  # TODO: implement your test here
+        assert False  # implement your test here
 
 # class TestRefreshFileList(unittest.TestCase):
     @unittest.skip('for now')
     def test_refresh_file_list(self):
         # self.assertEqual(expected, refresh_file_list(dicts, is_main, files_set_readonly, files_reset_changed))
-        assert False  # TODO: implement your test here
+        assert False  # implement your test here
 
 # class TestRefreshSignature(unittest.TestCase):
     @unittest.skip('for now')
     def test_refresh_signature(self):
         # self.assertEqual(expected, refresh_signature(dicts))
-        assert False  # TODO: implement your test here
+        assert False  # implement your test here
 
 # class TestSaveCommonDicts(unittest.TestCase):
     @unittest.skip('for now')
     def test_save_common_dicts(self):
         # self.assertEqual(expected, save_common_dicts(dicts, is_main, set_readonly))
-        assert False  # TODO: implement your test here
+        assert False  # implement your test here
 
 # class TestSaveMainDicts(unittest.TestCase):
 #    @unittest.skip('for now')
 #    def test_save_main_dicts(self):
 #        # self.assertEqual(expected, save_main_dicts(main_dicts, set_readonly))
-#        assert False  # TODO: implement your test here
+#        assert False  # implement your test here
 
 # class TestSaveEntryDicts(unittest.TestCase):
     @unittest.skip('for now')
     def test_save_entry_dicts(self):
         # self.assertEqual(expected, save_entry_dicts(entry_dicts, entry_name, summary_signature, set_readonly))
-        assert False  # TODO: implement your test here
+        assert False  # implement your test here
 
 # class TestReuseSimpleDict(unittest.TestCase):
     @unittest.skip('for now')
     def test_reuse_simple_dict(self):
         # self.assertEqual(expected, reuse_simple_dict(dicts, other_dicts, key, compare_keys))
-        assert False  # TODO: implement your test here
+        assert False  # implement your test here
 
 # class TestReuseFileDict(unittest.TestCase):
     @unittest.skip('for now')
     def test_reuse_file_dict(self):
         # self.assertEqual(expected, reuse_file_dict(dicts, other_dicts, key))
-        assert False  # TODO: implement your test here
+        assert False  # implement your test here
 
 # class TestReuseCommonDicts(unittest.TestCase):
     @unittest.skip('for now')
     def test_reuse_common_dicts(self):
         # self.assertEqual(expected, reuse_common_dicts(dicts, other_dicts, is_main, all_reused))
-        assert False  # TODO: implement your test here
+        assert False  # implement your test here
 
 # class TestReuseMainDicts(unittest.TestCase):
     @unittest.skip('for now')
     def test_reuse_main_dicts(self):
         # self.assertEqual(expected, reuse_main_dicts(main_dicts, other_main_dicts))
-        assert False  # TODO: implement your test here
+        assert False  # implement your test here
 
 # class TestReuseEntryDicts(unittest.TestCase):
     @unittest.skip('for now')
     def test_reuse_entry_dicts(self):
         # self.assertEqual(expected, reuse_entry_dicts(entry_dicts, other_entry_dicts, entry_name))
-        assert False  # TODO: implement your test here
+        assert False  # implement your test here
 
 
 class TestClientDirSupport(unittest.TestCase):
@@ -369,41 +379,41 @@ class TestChmodClientDirSupport(unittest.TestCase):
     @unittest.skip('for now')
     def test___init__(self):
         # chmod_client_dir_support = chmodClientDirSupport(user, dir, chmod, dir_name)
-        assert False  # TODO: implement your test here
+        assert False  # implement your test here
 
     @unittest.skip('for now')
     def test_create_dir(self):
         # chmod_client_dir_support = chmodClientDirSupport(user, dir, chmod, dir_name)
         # self.assertEqual(expected, chmod_client_dir_support.create_dir(fail_if_exists))
-        assert False  # TODO: implement your test here
+        assert False  # implement your test here
 
 
 class TestBaseClientDirSupport(unittest.TestCase):
     @unittest.skip('for now')
     def test___init__(self):
         # base_client_dir_support = baseClientDirSupport(user, dir, dir_name)
-        assert False  # TODO: implement your test here
+        assert False  # implement your test here
 
 
 class TestClientSymlinksSupport(unittest.TestCase):
     @unittest.skip('for now')
     def test___init__(self):
         # client_symlinks_support = clientSymlinksSupport(user_dirs, work_dir, symlink_base_subdir, dir_name)
-        assert False  # TODO: implement your test here
+        assert False  # implement your test here
 
 
 class TestClientLogDirSupport(unittest.TestCase):
     @unittest.skip('for now')
     def test___init__(self):
         # client_log_dir_support = clientLogDirSupport(user, log_dir, dir_name)
-        assert False  # TODO: implement your test here
+        assert False  # implement your test here
 
 
 class TestClientProxiesDirSupport(unittest.TestCase):
     @unittest.skip('for now')
     def test___init__(self):
         # client_proxies_dir_support = clientProxiesDirSupport(user, proxies_dir, proxiesdir_name)
-        assert False  # TODO: implement your test here
+        assert False  # implement your test here
 
 
 class TestGlideinMainDicts(unittest.TestCase):
@@ -458,109 +468,109 @@ class TestGlideinMainDicts(unittest.TestCase):
     def test_get_sub_dicts(self):
         # glidein_entry_dicts = glideinEntryDicts(base_work_dir, base_stage_dir, sub_name, summary_signature, workdir_name, base_log_dir, base_client_log_dirs, base_client_proxies_dirs)
         # self.assertEqual(expected, glidein_entry_dicts.get_sub_dicts())
-        assert False  # TODO: implement your test here
+        assert False  # implement your test here
 
     @unittest.skip('for now')
     def test_get_sub_log_dir(self):
         # glidein_entry_dicts = glideinEntryDicts(base_work_dir, base_stage_dir, sub_name, summary_signature, workdir_name, base_log_dir, base_client_log_dirs, base_client_proxies_dirs)
         # self.assertEqual(expected, glidein_entry_dicts.get_sub_log_dir(base_dir))
-        assert False  # TODO: implement your test here
+        assert False  # implement your test here
 
     @unittest.skip('for now')
     def test_get_sub_stage_dir(self):
         # glidein_entry_dicts = glideinEntryDicts(base_work_dir, base_stage_dir, sub_name, summary_signature, workdir_name, base_log_dir, base_client_log_dirs, base_client_proxies_dirs)
         # self.assertEqual(expected, glidein_entry_dicts.get_sub_stage_dir(base_dir))
-        assert False  # TODO: implement your test here
+        assert False  # implement your test here
 
     @unittest.skip('for now')
     def test_get_sub_work_dir(self):
         # glidein_entry_dicts = glideinEntryDicts(base_work_dir, base_stage_dir, sub_name, summary_signature, workdir_name, base_log_dir, base_client_log_dirs, base_client_proxies_dirs)
         # self.assertEqual(expected, glidein_entry_dicts.get_sub_work_dir(base_dir))
-        assert False  # TODO: implement your test here
+        assert False  # implement your test here
 
     #@unittest.skip('for now')
     #def test_load(self):
         # glidein_entry_dicts = glideinEntryDicts(base_work_dir, base_stage_dir, sub_name, summary_signature, workdir_name, base_log_dir, base_client_log_dirs, base_client_proxies_dirs)
         # self.assertEqual(expected, glidein_entry_dicts.load())
-    #    assert False  # TODO: implement your test here
+    #    assert False  # implement your test here
 
     #@unittest.skip('for now')
     #def test_reuse(self):
         # glidein_entry_dicts = glideinEntryDicts(base_work_dir, base_stage_dir, sub_name, summary_signature, workdir_name, base_log_dir, base_client_log_dirs, base_client_proxies_dirs)
         # self.assertEqual(expected, glidein_entry_dicts.reuse(other))
-    #    assert False  # TODO: implement your test here
+    #    assert False  # implement your test here
 
     @unittest.skip('for now')
     def test_reuse_nocheck(self):
         # glidein_entry_dicts = glideinEntryDicts(base_work_dir, base_stage_dir, sub_name, summary_signature, workdir_name, base_log_dir, base_client_log_dirs, base_client_proxies_dirs)
         # self.assertEqual(expected, glidein_entry_dicts.reuse_nocheck(other))
-        assert False  # TODO: implement your test here
+        assert False  # implement your test here
 
     #@unittest.skip('for now')
     #def test_save(self):
         # glidein_entry_dicts = glideinEntryDicts(base_work_dir, base_stage_dir, sub_name, summary_signature, workdir_name, base_log_dir, base_client_log_dirs, base_client_proxies_dirs)
         # self.assertEqual(expected, glidein_entry_dicts.save(set_readonly))
-    #    assert False  # TODO: implement your test here
+    #    assert False  # implement your test here
 
     @unittest.skip('for now')
     def test_save_final(self):
         # glidein_entry_dicts = glideinEntryDicts(base_work_dir, base_stage_dir, sub_name, summary_signature, workdir_name, base_log_dir, base_client_log_dirs, base_client_proxies_dirs)
         # self.assertEqual(expected, glidein_entry_dicts.save_final(set_readonly))
-        assert False  # TODO: implement your test here
+        assert False  # implement your test here
 
     @unittest.skip('for now')
     def test_erase(self):
         # glidein_entry_dicts = glideinEntryDicts(conf, sub_name, summary_signature, workdir_name)
         # self.assertEqual(expected, glidein_entry_dicts.erase())
-        assert False  # TODO: implement your test here
+        assert False  # implement your test here
 
     #@unittest.skip('for now')
     #def test_populate(self):
         # glidein_entry_dicts = glideinEntryDicts(conf, sub_name, summary_signature, workdir_name)
         # self.assertEqual(expected, glidein_entry_dicts.populate(entry, schedd))
-    #    assert False  # TODO: implement your test here
+    #    assert False  # implement your test here
 
 class TestGlideinDicts(unittest.TestCase):
     @unittest.skip('for now')
     def test___init__(self):
         # glidein_dicts = glideinDicts(work_dir, stage_dir, log_dir, client_log_dirs, client_proxies_dirs, entry_list, workdir_name)
-        assert False  # TODO: implement your test here
+        assert False  # implement your test here
 
     @unittest.skip('for now')
     def test_get_sub_name_from_sub_stage_dir(self):
         # glidein_dicts = glideinDicts(work_dir, stage_dir, log_dir, client_log_dirs, client_proxies_dirs, entry_list, workdir_name)
         # self.assertEqual(expected, glidein_dicts.get_sub_name_from_sub_stage_dir(sign_key))
-        assert False  # TODO: implement your test here
+        assert False  # implement your test here
 
     @unittest.skip('for now')
     def test_new_MainDicts(self):
         # glidein_dicts = glideinDicts(work_dir, stage_dir, log_dir, client_log_dirs, client_proxies_dirs, entry_list, workdir_name)
         # self.assertEqual(expected, glidein_dicts.new_MainDicts())
-        assert False  # TODO: implement your test here
+        assert False  # implement your test here
 
     @unittest.skip('for now')
     def test_new_SubDicts(self):
         # glidein_dicts = glideinDicts(work_dir, stage_dir, log_dir, client_log_dirs, client_proxies_dirs, entry_list, workdir_name)
         # self.assertEqual(expected, glidein_dicts.new_SubDicts(sub_name))
-        assert False  # TODO: implement your test here
+        assert False  # implement your test here
 
     @unittest.skip('for now')
     def test_populate(self):
         # glidein_dicts = glideinDicts(conf, sub_list)
         #  self.assertEqual(expected, glidein_dicts.populate(other))
-        assert False  # TODO: implement your test here
+        assert False  # implement your test here
 
     @unittest.skip('for now')
     def test_reuse(self):
         # glidein_dicts = glideinDicts(conf, sub_list)
         # self.assertEqual(expected, glidein_dicts.reuse(other))
-        assert False  # TODO: implement your test here
+        assert False  # implement your test here
 
     @unittest.skip('for now')
     def test_sortit(self):
         # glidein_dicts = glideinDicts(conf, sub_list)
         # self.assertEqual(expected, glidein_dicts.sortit(unsorted_dict))
-        assert False  # TODO: implement your test here
+        assert False  # implement your test here
 
 
 if __name__ == '__main__':

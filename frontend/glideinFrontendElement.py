@@ -97,7 +97,7 @@ class glideinFrontendElement:
         self.attr_dict = glideinFrontendConfig.AttrsDescript(
             self.work_dir, self.group_name).data
 
-        # Automatically initialze history object data to dictionaries
+        # Automatically initialize history object data to dictionaries
         # PS: The default initialization is not to CounterWrapper, to avoid
         # saving custom classes to disk
         self.history_obj = glideinFrontendConfig.HistoryFile(
@@ -136,6 +136,12 @@ class glideinFrontendElement:
         self.global_total_max_vms_idle = int(self.elementDescript.frontend_data['MaxIdleVMsTotalGlobal'])
         self.global_total_curb_vms_idle = int(self.elementDescript.frontend_data['CurbIdleVMsTotalGlobal'])
 
+        #If threshold set in the group, use this one. Otherwise use the global
+        if self.elementDescript.element_data.get('JobRateFailureTrigger')is None:
+            self.global_job_rate_failure_trigger = int(self.elementDescript.frontend_data['JobRateFailureTrigger'])
+        else:
+            self.global_job_rate_failure_trigger = int(self.elementDescript.element_data['JobRateFailureTrigger'])
+
         self.max_matchmakers = int(self.elementDescript.element_data['MaxMatchmakers'])
 
         self.removal_type = self.elementDescript.element_data['RemovalType']
@@ -143,7 +149,7 @@ class glideinFrontendElement:
         self.removal_requests_tracking = self.elementDescript.element_data['RemovalRequestsTracking']
         self.removal_margin = int(self.elementDescript.element_data['RemovalMargin'])
 
-        # Default bahavior: Use factory proxies unless configure overrides it
+        # Default behavior: Use factory proxies unless configure overrides it
         self.x509_proxy_plugin = None
 
         # If not None, this is a request for removal of glideins only (i.e. do not ask for more)
@@ -407,7 +413,7 @@ class glideinFrontendElement:
 
         (self.status_dict, self.fe_counts, self.global_counts, self.status_schedd_dict) = pipe_out[('collector', 0)]
 
-        # M2Crypto objects are not picklable, so do the transforamtion here
+        # M2Crypto objects are not pickable, so do the transformation here
         self.populate_pubkey()
         self.identify_bad_schedds()
         self.populate_condorq_dict_types()
@@ -560,7 +566,7 @@ class glideinFrontendElement:
 
             glidein_el = self.glidein_dict[glideid]
             glidein_in_downtime = \
-                glidein_el['attrs'].get('GLIDEIN_In_Downtime') == 'True'
+                glidein_el['attrs'].get('GLIDEIN_In_Downtime', False) is True
 
             count_jobs = {}   # straight match
             prop_jobs = {}    # proportional subset for this entry
@@ -580,10 +586,10 @@ class glideinFrontendElement:
             # Note: if GLEXEC is set to NEVER, the site will never see
             # the proxy, so it can be avoided.
             if (self.glexec != 'NEVER'):
-                if (glidein_el['attrs'].get('GLIDEIN_REQUIRE_VOMS')=="True"):
+                if (str.lower(str(glidein_el['attrs'].get('GLIDEIN_REQUIRE_VOMS')))=="true"):
                         prop_jobs['Idle']=prop_jobs['VomsIdle']
                         logSupport.log.info("Voms proxy required, limiting idle glideins to: %i" % prop_jobs['Idle'])
-                elif (glidein_el['attrs'].get('GLIDEIN_REQUIRE_GLEXEC_USE')=="True"):
+                elif (str.lower(str(glidein_el['attrs'].get('GLIDEIN_REQUIRE_GLEXEC_USE')))=="true"):
                         prop_jobs['Idle']=prop_jobs['ProxyIdle']
                         logSupport.log.info("Proxy required (GLEXEC), limiting idle glideins to: %i" % prop_jobs['Idle'])
 
@@ -1234,7 +1240,7 @@ class glideinFrontendElement:
         log_and_sum_factory_line('Unmatched', True, this_stats_arr, total_down_stats_arr)
 
     def decide_removal_type(self, count_jobs, count_status, glideid):
-        """Picks the max removal type
+        """Picks the max removal type (unless disable is requested)
         - if it was requested explicitly, send that one
         - otherwise check automatic triggers and configured removal and send the max of the 2
 
@@ -1248,12 +1254,16 @@ class glideinFrontendElement:
                          'WAIT': 1,
                          'IDLE': 2,
                          'ALL': 3,
-                         'UNREG': 4  # Mentioned in glideinFrontendIntrface.py - not documented
+                         'UNREG': 4,  # Mentioned in glideinFrontendInterface.py - not documented
+                         'DISABLE': -1
                          }
         remove_excess_str_auto = self.choose_remove_excess_type(count_jobs, count_status, glideid)
         remove_excess_str_config = self.check_removal_type_config(glideid)
         remove_excess_str_auto_nr = remove_levels[remove_excess_str_auto]
         remove_excess_str_config_nr = remove_levels[remove_excess_str_config]
+        if remove_excess_str_config_nr < 0:
+            # disable all removals
+            return 'NO', 0
         if remove_excess_str_auto_nr > remove_excess_str_config_nr:
             return remove_excess_str_auto, 0
         # Config request >= automatic removal
@@ -1265,15 +1275,17 @@ class glideinFrontendElement:
 
     def check_removal_type_config(self, glideid):
         """Decides what kind of excess glideins to remove depending on the configuration requests (glideins_remove)
-            "ALL", "IDLE", "WAIT", or "NO"
+            "ALL", "IDLE", "WAIT", "NO" or "DISABLE" (disable also automatic removal)
 
         @param glideid: ID of the glidein
-        @return: remove excess string, one of: "ALL", "IDLE", "WAIT", or "NO"
+        @return: remove excess string, one of: "DISABLE", "ALL", "IDLE", "WAIT", or "NO"
         """
         # self.removal_type is RemovalType from the FE group configuration
         if self.removal_type is None or self.removal_type == 'NO':
             # No special semoval requested, leave things unchanged
             return 'NO'
+        if self.removal_type == 'DISABLE':
+            return 'DISABLE'
         # Cannot compare the current requests w/ the available glideins (factory status not provided to the FE)
         # If tracking is enabled, always request removal and send the margin. The factory will decide
         if self.removal_requests_tracking:

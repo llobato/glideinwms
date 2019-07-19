@@ -136,12 +136,6 @@ class glideinFrontendElement:
         self.global_total_max_vms_idle = int(self.elementDescript.frontend_data['MaxIdleVMsTotalGlobal'])
         self.global_total_curb_vms_idle = int(self.elementDescript.frontend_data['CurbIdleVMsTotalGlobal'])
 
-        #If threshold set in the group, use this one. Otherwise use the global
-        if self.elementDescript.element_data.get('JobRateFailureTrigger')is None:
-            self.global_job_rate_failure_trigger = int(self.elementDescript.frontend_data['JobRateFailureTrigger'])
-        else:
-            self.global_job_rate_failure_trigger = int(self.elementDescript.element_data['JobRateFailureTrigger'])
-
         self.max_matchmakers = int(self.elementDescript.element_data['MaxMatchmakers'])
 
         self.removal_type = self.elementDescript.element_data['RemovalType']

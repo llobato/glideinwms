@@ -71,9 +71,6 @@ class VOFrontendParams(cWParams.CommonParams):
         group_config_lifetime_defaults["max"]=['0', "NR", "How long idle glideins are kept in the factory queue (seconds)", None]
         group_config_defaults['idle_glideins_lifetime']=group_config_lifetime_defaults
 
-        # 0 by default, what it means that there is no limit
-        group_config_defaults['job_rate_failure_trigger'] = ['0', "NR","What is the number of jobs completed in the last X seconds?",None]
-
         group_config_vms_defaults=cWParams.commentedOrderedDict()
         group_config_vms_defaults["max"]=['100', "nr_vms", "How many idle VMs should I tollerate, before stopping submitting glideins", None]
         group_config_vms_defaults["curb"]=['5', "nr_vms", "How many idle VMs should I tollerate, before starting to curb submissions.", None]

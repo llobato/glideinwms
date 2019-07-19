@@ -46,6 +46,9 @@ metrics=""
 # put in place a reasonable default
 GLIDEIN_CPUS=1
 
+#LET'S going to assume that so far glidein is not a blackhole
+GLIDEIN_BLACKHOLE="FALSE"
+
 # first of all, clean up any CONDOR variable
 condor_vars=`env |awk '/^_[Cc][Oo][Nn][Dd][Oo][Rr]_/{split($1,a,"=");print a[1]}'`
 for v in $condor_vars; do
@@ -455,7 +458,6 @@ if [ -z "$job_maxtime" ]; then
         echo "WARNING: job max time not defined in vars or glidein_config, using 192600!" 1>&2
         job_maxtime=192600
     fi
-fi
 
 # At this point, we need to define two times:
 #  die_time = time that glidein will enter graceful shutdown
@@ -611,13 +613,13 @@ GLIDEIN_VARIABLES = $glidein_variables
 MASTER_NAME = glidein_${glidein_startup_pid}_${random_name_str}
 STARTD_NAME = glidein_${glidein_startup_pid}_${random_name_str}
 
-#Stats that make dectection of black-hole slots
-STARTD.STATISTICS_TO_PUBLISH_LIST = $(STATISTICS_TO_PUBLISH_LIST) JobBusyTime, JobDuration
+#Stats that make detection of black-hole slots
+STARTD.STATISTICS_TO_PUBLISH_LIST = $(STATISTICS_TO_PUBLISH_LIST) RecentJobBusyTime, RecentJobDuration
 
 #This can be used for locating the proper PID for monitoring
 GLIDEIN_PARENT_PID = $$
 
-START = $START_JOBS && (SiteWMS_WN_Draining =?= False)
+START = $START_JOBS && (SiteWMS_WN_Draining =?= False) && (GLIDEIN_BLACKHOLE =?= False) 
 
 #Use the default grace time unless the job has to be preempted. In that case set the value to 20 minutes.
 PREEMPT_GRACE_TIME = ifthenelse( (SiteWMS_WN_Preempt =?= True), 1200, $PREEMPT_GRACE_TIME)
@@ -716,15 +718,15 @@ EOF
             echo "SLOT_TYPE_1 = cpus=\$(GLIDEIN_CPUS)" >> "$CONDOR_CONFIG"
             echo "NUM_SLOTS_TYPE_1 = 1" >> "$CONDOR_CONFIG"
             echo "SLOT_TYPE_1_PARTITIONABLE = True" >> "$CONDOR_CONFIG"
-            echo "STARTD_PARTITIONABLE_SLOT_ATTRS = JobBusyTimeAvg, JobDurationTimeAvg, RecentJobBusyTimeAvg, RecentJobDurationTimeAvg" >> "$CONDOR_CONFIG"
-            echo "STARTD_ATTRS = $(STARTD_ATTRS) max(ChildJobBusyTimeAvg), max(JobDurationTimeAvg), max(RecentJobBusyTimeAvg), max(RecentJobDurationTimeAvg)" >> "$CONDOR_CONFIG"
+            echo "STARTD_PARTITIONABLE_SLOT_ATTRS = RecentJobBusyTimeAvg, RecentJobBusyTimeCount" >> "$CONDOR_CONFIG"
+            echo "STARTD_ATTRS = $(STARTD_ATTRS) max(ChildRecentJobBusyTimeAvg), max(ChildRecentJobBusyTimeCount)" >> "$CONDOR_CONFIG"
             num_slots_for_shutdown_expr=1
         else
             # fixed slot
             echo "SLOT_TYPE_1 = cpus=1" >> "$CONDOR_CONFIG"
             echo "NUM_SLOTS_TYPE_1 = \$(GLIDEIN_CPUS)" >> "$CONDOR_CONFIG"
-            echo "STARTD_SLOT_ATTRS = JobBusyTimeAvg, JobDurationTimeAvg, RecentJobBusyTimeAvg, RecentJobDurationTimeAvg" >> "$CONDOR_CONFIG"
-            echo "STARTD_ATTRS = $(STARTD_ATTRS) JobBusyTimeAvgList, JobDurationAvgList, RecentJobBusyTimeAvgList, RecentJobDurationTimeAvgList" >> "$CONDOR_CONFIG"
+            echo "STARTD_SLOT_ATTRS = RecentJobBusyTimeAvg, RecentJobBusyTimeCount" >> "$CONDOR_CONFIG"
+            echo "STARTD_ATTRS = $(STARTD_ATTRS) RecentJobBusyTimeAvgList, RecentJobBusyTimeCountList" >> "$CONDOR_CONFIG"
             num_slots_for_shutdown_expr=$GLIDEIN_CPUS
         fi
 
@@ -865,13 +867,17 @@ EOF
 
         fi  # end of resource slot if
 
-        # Set to shutdown if total idle exceeds max idle, or if the age
         # exceeds the retire time (and is idle) or is over the max walltime (todie)
-        echo "STARTD_SLOT_ATTRS = \$(STARTD_SLOT_ATTRS), State, Activity, TotalTimeUnclaimedIdle, TotalTimeClaimedBusy" >> "$CONDOR_CONFIG"
+        echo "STARTD_SLOT_ATTRS =  \$(STARTD_SLOT_ATTRS), State, Activity, TotalTimeUnclaimedIdle, TotalTimeClaimedBusy" >> "$CONDOR_CONFIG"
         echo "STARTD_SLOT_ATTRS = \$(STARTD_SLOT_ATTRS), SelfMonitorAge, JobStarts, ExpectedMachineGracefulDrainingCompletion" >> "$CONDOR_CONFIG"
         daemon_shutdown=""
         for I in `seq 1 $num_slots_for_shutdown_expr`; do
             cat >> "$CONDOR_CONFIG" <<EOF
+
+BLACKHOLE_TRIGGERED_${I} = ((Slot${I}_RecentJobBusyTimeAvg < ${GLIDEIN_BLACKHOLE_RATE}) && (Slot${I}_RecentJobBusyTimeCount > ${GLIDEIN_BLACKHOLE_NUMJOBS}) && \\
+                           (Slot${I}_RecentJobBusyTimeAvg / Slot${I}_RecentJobBusyTimeCount))
+GLIDEIN_BLACKHOLE= (${GLIDEIN_BLACKHOLE} || \$(BLACKHOLE_TRIGGERED_${I}))
+
 
 DS${I}_TO_DIE = ((GLIDEIN_ToDie =!= UNDEFINED) && (CurrentTime > GLIDEIN_ToDie))
 

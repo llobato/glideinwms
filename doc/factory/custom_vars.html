@@ -1098,6 +1098,22 @@ described below ar the most often used.</P>
             <p>CLAIM_WORKLIFE for dynamically partitionable slots. Defaults to 3600. This controls how frequently the dynamically partionable slots will coalesce.
         </TD>
     </TR>
+    <TR>
+        <td> <b>GLIDEIN_BLACKHOLE_NUMJOBS</b> </td>
+        <td> Int </TD>
+
+        <TD>
+            <p>First blackhole detection limit. This attribute represents the limit of jobs to be completed in the last 20 min of the Starter lifetime before raising the flag of blackhole detection. 
+        </TD>
+    </TR>
+    <TR>
+        <td> <b>GLIDEIN_BLACKHOLE_RATE</b> </td>
+        <td> Int </TD>
+
+        <TD>
+            <p>Second blackhole detection limit. This attribute represents the limit of jobs to be completed divided by the desired time (in seconds) defined by the user, to raise the flag of blackhole detection. 
+        </TD>
+    </TR>	
 
 </TABLE>
 </div>
@@ -1208,6 +1224,15 @@ cannot directly change them.</P>
         <td> <b>CONDORG_SUBCLUSTER</b> </td>
         <TD> Int </TD>
     </TR>
+    <TR>
+        <td> <b>GLIDEIN_BLACKHOLE</b> </td>
+        <td> Expr(Bool) </TD>
+
+        <TD>
+            <p>This variable controls if the glidein should retire and add all the preventive measures to avoid back-hole effects. If TRUE, it does mean that GLIDEIN_BLACKHOLE_NUMJOBS and GLIDEIN_BLACKHOLE_RATE attributes set by the user, met the criteria and therefore, the glidein is a blackhole.   
+	</TD>
+    </TR>
+	
 </TABLE>
 </div>
 <div class="section">
